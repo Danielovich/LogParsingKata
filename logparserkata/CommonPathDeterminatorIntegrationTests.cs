@@ -9,13 +9,15 @@ public class CommonPathDeterminatorIntegrationTests
         var logLoader = new LogFileLoader();
         var logEntries = await logLoader.LoadEntriesAsync();
 
-        var sut = new CommonPathDeterminator(logEntries);
+        var partions = new PathPartition(logEntries);
+        var up = partions.PathPartitionsByUserId(3);
+
+        var sut = new PathPatternAnalazyer(up);
 
         //Act
-        var pattern = sut.ThreePagePattern(sut.CommonPathPartitionsByUserId());
-        var oo = pattern.OrderByDescending(o => o.OccurenceCount).ToList();
+        sut.OccurenceOrderByDescending();
+        
         //Assert
-
     }
 
 }
