@@ -2,58 +2,77 @@
 
 public class PathPatternsAnalyzer
 {
-    private IOrderedEnumerable<PathPattern> orderedPathPatterns;
+    private readonly IEnumerable<LogEntry> logEntries;
+    private readonly int partitionSize;
+
+    private IOrderedEnumerable<PathPattern> orderedPathPatterns = Enumerable.Empty<PathPattern>().OrderBy(p => 0);
+    private IEnumerable<UserPathPartition> userPathPartitions = new List<UserPathPartition>();
 
 
-    public PathPatternsAnalyzer(IOrderedEnumerable<PathPattern> orderedPathPatterns)
+    public PathPatternsAnalyzer(IEnumerable<LogEntry> logEntries, int partitionSize)
     {
-        if (!orderedPathPatterns.Any())
+        if (partitionSize == 0)
         {
-            throw new ArgumentException($"{nameof(orderedPathPatterns)} cannot be empty.");
+            throw new ArgumentException($"{partitionSize} cannot be zero");
         }
 
-        if (!IsDescendingOrder(orderedPathPatterns))
+        if(partitionSize > logEntries.Count())
         {
-            throw new ArgumentException($"{nameof(orderedPathPatterns)}" +
-                $" is not in descending order by {nameof(PathPattern.OccurenceCount)}.");
+            throw new ArgumentException($"{partitionSize} is larger than the total " +
+                $"entries in {logEntries} - {logEntries.Count()}");
         }
 
-        this.orderedPathPatterns = orderedPathPatterns;
+        this.logEntries = logEntries ?? new List<LogEntry>();
+        this.partitionSize = partitionSize;
+
+        PartitionUserPaths();
+        OrderPathPatterns();
     }
 
-    public PathPattern SingleMostCommonPathPattern()
+    public PathPattern MostCommonPathPattern()
     {
-        return this.orderedPathPatterns.First();
-    }
-
-    public IEnumerable<PathPattern> MostCommonPathPatterns(int take)
-    {
-        return this.orderedPathPatterns.Take(take);
-    }
-
-    public int TotalCommonPathPatterns()
-    {
-        return this.orderedPathPatterns.Sum(s => s.PathPatterns.Count());
-    }
-
-
-    private bool IsDescendingOrder(IOrderedEnumerable<PathPattern> input)
-    {
-        var previous = input.FirstOrDefault();
-        
-        if (previous is null)  
-            return true; 
-        
-
-        foreach (var current in input.Skip(1))
+        // not common paths, extremly slow!
+        if (orderedPathPatterns.All(p => p.OccurenceCount == orderedPathPatterns.First().OccurenceCount))
         {
-            if (current.OccurenceCount > previous.OccurenceCount)
-            {
-                return false;
-            }
-            previous = current;
+            return new PathPattern(0, new List<UserPathPartition>());
         }
 
-        return true;
+        return orderedPathPatterns.First();
+    }
+
+    public IOrderedEnumerable<PathPattern> AllPathPatterns()
+    {
+        return orderedPathPatterns;
+    }
+
+    public UserPathPartition? FastestCommonPathPattern()
+    {
+        var mostCommon = MostCommonPathPattern();
+
+        var fastest = mostCommon.PathPatterns.OrderBy(s => s.TotalLoadTime);
+
+        return fastest.FirstOrDefault();
+    }
+
+    public UserPathPartition SlowestPathPattern()
+    {
+        var slowest = orderedPathPatterns
+            .SelectMany(p => p.PathPatterns)
+            .OrderByDescending(o => o.TotalLoadTime)
+            .First();
+
+        return slowest;
+    }
+
+    private void PartitionUserPaths()
+    {
+        var pathPartitions = new UserPathPartitions(this.logEntries);
+        userPathPartitions = pathPartitions.PartitionedByUserId(this.partitionSize);
+    }
+
+    private void OrderPathPatterns()
+    {
+        var pathPatterns = new PathPatterns(this.userPathPartitions);
+        orderedPathPatterns = pathPatterns.OrderByOccurenceDescending();
     }
 }

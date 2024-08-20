@@ -1,15 +1,15 @@
 namespace logparserkata;
 
-public class PathPartitionTests
+public class UserPathPartitionsTests
 {
     [Fact]
     public void Common_Path_Partitions_For_User_Is_Partitioned_Correct()
     {
         //Arrange
-        var sut = new PathPartition(Log_Entries_For_Three_Users());
+        var sut = new UserPathPartitions(Log_Entries_For_Three_Users());
 
         //Act
-        var pathPartitions = sut.PathPartitionsByUserId(3);
+        var pathPartitions = sut.PartitionedByUserId(3);
 
         //Assert
         foreach (var pathPartitionForUser in pathPartitions
@@ -23,10 +23,10 @@ public class PathPartitionTests
     public void Common_Path_Partitions_Has_Total_LoadTime_Calculated_Correct()
     {
         //Arrange
-        var sut = new PathPartition(Log_Entries_For_Three_Users());
+        var sut = new UserPathPartitions(Log_Entries_For_Three_Users());
 
         //Act
-        var pathPartitions = sut.PathPartitionsByUserId(3);
+        var pathPartitions = sut.PartitionedByUserId(3);
 
         //Assert
         foreach (var pathPartitionForUser in pathPartitions)
@@ -41,10 +41,10 @@ public class PathPartitionTests
     public void Common_Path_Partitions_UserId_Is_Not_0()
     {
         //Arrange
-        var sut = new PathPartition(Log_Entries_For_Three_Users());
+        var sut = new UserPathPartitions(Log_Entries_For_Three_Users());
 
         //Act
-        var pathPartitions = sut.PathPartitionsByUserId(3);
+        var pathPartitions = sut.PartitionedByUserId(3);
 
         //Assert
         foreach (var pathPartitionForUser in pathPartitions)

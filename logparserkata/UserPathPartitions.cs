@@ -1,15 +1,15 @@
 ﻿namespace logparserkata;
 
-public class PathPartition
+public class UserPathPartitions
 {
     private readonly IEnumerable<LogEntry> logEntries;
 
-    public PathPartition(IEnumerable<LogEntry> logEntries)
+    public UserPathPartitions(IEnumerable<LogEntry> logEntries)
     {
         this.logEntries = logEntries ?? new List<LogEntry>();
     }
 
-    public IEnumerable<UserPathPartition> PathPartitionsByUserId(int partitionSize)
+    public IEnumerable<UserPathPartition> PartitionedByUserId(int partitionSize)
     {
         var groupedLogEntriesByUser = logEntries
             .GroupBy(x => x.UserId)
@@ -20,7 +20,7 @@ public class PathPartition
         foreach (var userLogEntries in groupedLogEntriesByUser)
         {
             logEntryPartitions.Clear();
-            var sizedLogPartitions = CreatePathPartitions(partitionSize, userLogEntries);
+            var sizedLogPartitions = CreateUserPathPartitions(partitionSize, userLogEntries);
 
             foreach (var logPartition in sizedLogPartitions)
             {
@@ -33,11 +33,9 @@ public class PathPartition
         return userPathPartitions;
     }
 
+    private List<IEnumerable<LogEntry>> logEntryPartitions = new List<IEnumerable<LogEntry>>();
 
-    private List<IEnumerable<LogEntry>> logEntryPartitions 
-        = new List<IEnumerable<LogEntry>>();
-
-    private List<IEnumerable<LogEntry>> CreatePathPartitions(
+    private List<IEnumerable<LogEntry>> CreateUserPathPartitions(
         int partitionSize, IEnumerable<LogEntry> logEntries, int skip = 0)
     {
         // no reason to continue if our log entries holds too little data
@@ -55,7 +53,7 @@ public class PathPartition
         {
             logEntryPartitions.Add(logEntriesPartition);
 
-            return CreatePathPartitions(partitionSize, logEntries, ++skip);
+            return CreateUserPathPartitions(partitionSize, logEntries, ++skip);
         }
 
         return logEntryPartitions;
