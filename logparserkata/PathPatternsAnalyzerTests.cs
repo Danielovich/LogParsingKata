@@ -52,7 +52,7 @@ public class PathPatternsAnalyzerTests
         var actual = sut.FastestCommonPathPattern();
 
         //Arrange
-        Assert.True(actual.TotalLoadTime == 620);
+        Assert.True(actual!.TotalLoadTime == 620);
     }
 
     [Fact]
