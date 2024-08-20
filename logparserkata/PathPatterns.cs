@@ -1,18 +1,20 @@
 ﻿namespace logparserkata;
 
-public class PathPatternAnalazyer
+public class PathPatterns
 {
     private readonly IEnumerable<UserPathPartition> userPathPartitions;
+    private readonly Dictionary<string, PathPattern> pathPatternOccurences;
 
-    public PathPatternAnalazyer(IEnumerable<UserPathPartition> userPathPartitions)
+    public PathPatterns(IEnumerable<UserPathPartition> userPathPartitions)
     {
         this.userPathPartitions = userPathPartitions ?? new List<UserPathPartition>();
+        this.pathPatternOccurences = new Dictionary<string, PathPattern>();
     }
 
-    private Dictionary<string, PathPattern> pathPatternOccurences = new();
-
-    public IEnumerable<PathPattern> OccurenceOrderByDescending()
+    public IOrderedEnumerable<PathPattern> OrderByOccurenceDescending()
     {
+        pathPatternOccurences.Clear();
+
         foreach (var pathPartition in userPathPartitions)
         {
             var flattendPaths = pathPartition.FlattenedPaths;
@@ -21,11 +23,10 @@ public class PathPatternAnalazyer
             NonExistingPathPattern(flattendPaths, pathPartition);
         }
 
-        var orderedMostCommonThreePagePattern = pathPatternOccurences
-            .OrderByDescending(o => o.Value.OccurenceCount)
-            .Select(o => o.Value);
+        var orderedPatternOccurences = pathPatternOccurences.Values
+            .OrderByDescending(p => p.OccurenceCount);
 
-        return orderedMostCommonThreePagePattern;
+        return orderedPatternOccurences;
     }
 
     private void NonExistingPathPattern(string flattenedPaths, UserPathPartition userPathPartition)
@@ -49,12 +50,11 @@ public class PathPatternAnalazyer
             var patternOccurence = pathPatternOccurences[flattenedPaths];
             var count = patternOccurence.OccurenceCount;
 
-            var updatedUserPathPartitions = new List<UserPathPartition>(patternOccurence.PathPatterns)
-            {
+            patternOccurence.PathPatterns.Add(
                 new UserPathPartition(userPathPartition.Paths)
-            };
+            );
 
-            var occurence = new PathPattern(++count, updatedUserPathPartitions);
+            var occurence = new PathPattern(++count, patternOccurence.PathPatterns);
 
             pathPatternOccurences.Remove(flattenedPaths);
             pathPatternOccurences.Add(flattenedPaths, occurence);

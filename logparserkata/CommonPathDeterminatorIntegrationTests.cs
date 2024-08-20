@@ -12,10 +12,10 @@ public class CommonPathDeterminatorIntegrationTests
         var partions = new PathPartition(logEntries);
         var up = partions.PathPartitionsByUserId(3);
 
-        var sut = new PathPatternAnalazyer(up);
+        var sut = new PathPatterns(up);
 
         //Act
-        sut.OccurenceOrderByDescending();
+        sut.OrderByOccurenceDescending();
         
         //Assert
     }

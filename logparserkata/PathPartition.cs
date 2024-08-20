@@ -9,7 +9,6 @@ public class PathPartition
         this.logEntries = logEntries ?? new List<LogEntry>();
     }
 
-    //public IEnumerable<CommonPath> CommonPathPartitionsByUserId()
     public IEnumerable<UserPathPartition> PathPartitionsByUserId(int partitionSize)
     {
         var groupedLogEntriesByUser = logEntries
@@ -35,9 +34,11 @@ public class PathPartition
     }
 
 
-    private List<IEnumerable<LogEntry>> logEntryPartitions = new List<IEnumerable<LogEntry>>();
+    private List<IEnumerable<LogEntry>> logEntryPartitions 
+        = new List<IEnumerable<LogEntry>>();
 
-    private List<IEnumerable<LogEntry>> CreatePathPartitions(int partitionSize, IEnumerable<LogEntry> logEntries, int skip = 0)
+    private List<IEnumerable<LogEntry>> CreatePathPartitions(
+        int partitionSize, IEnumerable<LogEntry> logEntries, int skip = 0)
     {
         // no reason to continue if our log entries holds too little data
         if (logEntries.Count() < partitionSize)

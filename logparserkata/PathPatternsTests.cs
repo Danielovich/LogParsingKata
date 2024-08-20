@@ -1,15 +1,31 @@
 ﻿namespace logparserkata;
 
-public class PathPatternAnalyzerTests
+public class PathPatternsTests
 {
+    [Fact]
+    public void Calling_Order_By_Occurence_Descending_Twice_Results_As_A_Single_Call()
+    {
+        //Arrange
+        var sut = new PathPatterns(Partitions_For_20_Users());
+
+        //Act
+        var actual = sut.OrderByOccurenceDescending();
+        var expected = actual.OrderByDescending(p => p.OccurenceCount).ToList();
+
+        actual = sut.OrderByOccurenceDescending();
+
+        //Assert
+        Assert.Equivalent(expected, actual, true);
+    }
+
     [Fact]
     public void Path_Pattern_Occurence_Is_Ordered_By_Descending()
     {
         //Arrange
-        var sut = new PathPatternAnalazyer(Partitions_For_20_Users());
+        var sut = new PathPatterns(Partitions_For_20_Users());
 
         //Act
-        var actual = sut.OccurenceOrderByDescending();
+        var actual = sut.OrderByOccurenceDescending();
         var expected = actual.OrderByDescending(p => p.OccurenceCount);
 
         //Assert
@@ -17,13 +33,13 @@ public class PathPatternAnalyzerTests
     }
 
     [Fact]
-    public void Path_Pattern_Occurence_Has_Known_Number_Of_Occurences()
+    public void Path_Patterns_Has_Known_Number_Of_Occurences()
     {
         //Arrange
-        var sut = new PathPatternAnalazyer(Partitions_For_20_Users());
+        var sut = new PathPatterns(Partitions_For_20_Users());
 
         //Act
-        var actual = sut.OccurenceOrderByDescending();
+        var actual = sut.OrderByOccurenceDescending();
 
         //Assert
         var first = actual.First();

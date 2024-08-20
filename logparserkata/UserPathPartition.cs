@@ -11,18 +11,16 @@ public class UserPathPartition
     {
         this.Paths = paths ?? new List<LogEntry>();
         this.UserId = this.Paths.Select(u => u.UserId).FirstOrDefault();
-
-        var s = string.Join(string.Empty, this.Paths);
     }
 
     public string Flatten()
     {
-        string s = "";
-        foreach (var item in Paths)
+        string flattenedPaths = string.Empty;
+        foreach (var logEntry in Paths)
         {
-            s = s + item.Path;
+            flattenedPaths = flattenedPaths + logEntry.Path;
         }
 
-        return s;
+        return flattenedPaths;
     }
 }
