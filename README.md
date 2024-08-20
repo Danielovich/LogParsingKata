@@ -10,3 +10,5 @@ I have written articles around every iteration, starting with an opener.
 4. [Three Page Path Challenge - third iteration](https://danielfrost.dk/three-page-path-challenge-third-iteration.html)
 
 You can find a branch in this repo with the name for each iteration.
+
+[For the last iteration, you want to start from this type](https://github.com/Danielovich/LogParsingKata/blob/thirditeration/logparserkata/PathPatternsAnalyzerTests.cs)
