@@ -1,5 +1,6 @@
 ﻿namespace logparserkata;
 
+
 public struct LogEntry
 {
     public LogEntry(int userId, string path, int loadTime)
@@ -14,7 +15,7 @@ public struct LogEntry
     public string Path { get; }
 }
 
-public sealed class LogFileLoader
+public class LogFileLoader
 {
     private List<LogEntry> LogEntries { get; } = new List<LogEntry>();
 
