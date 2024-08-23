@@ -14,7 +14,7 @@ public struct LogEntry
     public string Path { get; }
 }
 
-public class LogFileLoader
+public sealed class LogFileLoader
 {
     private List<LogEntry> LogEntries { get; } = new List<LogEntry>();
 

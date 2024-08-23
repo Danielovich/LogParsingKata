@@ -1,19 +1,21 @@
-﻿namespace logparserkata;
+﻿using System.Collections.Immutable;
 
-public class UserPathPartitions
+namespace logparserkata;
+
+public sealed class UserPathPartitions
 {
-    private readonly IEnumerable<LogEntry> logEntries;
+    private readonly IImmutableList<LogEntry> logEntries;
 
     public UserPathPartitions(IEnumerable<LogEntry> logEntries)
     {
-        this.logEntries = logEntries ?? new List<LogEntry>();
+        this.logEntries = logEntries.ToImmutableList() ?? ImmutableList<LogEntry>.Empty;
     }
 
-    public IEnumerable<UserPathPartition> PartitionedByUserId(int partitionSize)
+    public ImmutableList<UserPathPartition> PartitionedByUserId(int partitionSize)
     {
         var groupedLogEntriesByUser = logEntries
             .GroupBy(x => x.UserId)
-            .Select(s => s.ToList());
+            .Select(s => s.AsEnumerable());
 
         List<UserPathPartition> userPathPartitions = new();
 
@@ -30,7 +32,7 @@ public class UserPathPartitions
             }
         }
 
-        return userPathPartitions;
+        return userPathPartitions.ToImmutableList();
     }
 
     private List<IEnumerable<LogEntry>> logEntryPartitions = new List<IEnumerable<LogEntry>>();

@@ -1,13 +1,15 @@
-﻿namespace logparserkata;
+﻿using System.Collections.Immutable;
 
-public class PathPatterns
+namespace logparserkata;
+
+public sealed class PathPatterns
 {
-    private readonly IEnumerable<UserPathPartition> userPathPartitions;
+    private readonly IImmutableList<UserPathPartition> userPathPartitions;
     private readonly Dictionary<string, PathPattern> pathPatternOccurences;
 
     public PathPatterns(IEnumerable<UserPathPartition> userPathPartitions)
     {
-        this.userPathPartitions = userPathPartitions ?? new List<UserPathPartition>();
+        this.userPathPartitions = userPathPartitions.ToImmutableList() ?? ImmutableList<UserPathPartition>.Empty;
         this.pathPatternOccurences = new Dictionary<string, PathPattern>();
     }
 
@@ -50,11 +52,11 @@ public class PathPatterns
             var patternOccurence = pathPatternOccurences[flattenedPaths];
             var count = patternOccurence.OccurenceCount;
 
-            patternOccurence.PathPatterns.Add(
+            var pathPatternsCopy = patternOccurence.PathPatterns.Add(
                 new UserPathPartition(userPathPartition.Paths)
             );
 
-            var occurence = new PathPattern(++count, patternOccurence.PathPatterns);
+            var occurence = new PathPattern(++count, pathPatternsCopy);
 
             pathPatternOccurences.Remove(flattenedPaths);
             pathPatternOccurences.Add(flattenedPaths, occurence);

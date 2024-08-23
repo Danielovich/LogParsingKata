@@ -106,8 +106,9 @@ public class PathPatternsAnalyzerTests
         var actual = sut.FastestCommonPathPattern();
 
         //Arrange
-        Assert.Null(actual);
+        Assert.NotNull(actual);
     }
+
 
     private IEnumerable<LogEntry> Log_Entries_No_Common_Paths()
     {

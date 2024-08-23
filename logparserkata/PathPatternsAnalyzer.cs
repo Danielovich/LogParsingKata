@@ -1,8 +1,10 @@
-﻿namespace logparserkata;
+﻿using System.Collections.Immutable;
 
-public class PathPatternsAnalyzer
+namespace logparserkata;
+
+public sealed class PathPatternsAnalyzer
 {
-    private readonly IEnumerable<LogEntry> logEntries;
+    private readonly ImmutableList<LogEntry> logEntries;
     private readonly int partitionSize;
 
     private IOrderedEnumerable<PathPattern> orderedPathPatterns = Enumerable.Empty<PathPattern>().OrderBy(p => 0);
@@ -11,7 +13,7 @@ public class PathPatternsAnalyzer
     public PathPatternsAnalyzer(IEnumerable<LogEntry> logEntries, int partitionSize)
     {
         this.partitionSize = partitionSize;
-        this.logEntries = logEntries ?? [];
+        this.logEntries = logEntries.ToImmutableList() ?? ImmutableList<LogEntry>.Empty;
 
         if (this.partitionSize == 0)
         {
@@ -30,8 +32,12 @@ public class PathPatternsAnalyzer
 
     public PathPattern MostCommonPathPattern()
     {
-        // no common paths, extremly slow!
-        if (orderedPathPatterns.All(p => p.OccurenceCount == orderedPathPatterns.First().OccurenceCount))
+        // if first and last entry in an ordered list has the same
+        // occurence count, there can be no common path
+        var first = orderedPathPatterns.First();
+        var last = orderedPathPatterns.Last();
+
+        if (first.OccurenceCount == last.OccurenceCount)
         {
             return new PathPattern(0, new List<UserPathPartition>());
         }
@@ -44,13 +50,13 @@ public class PathPatternsAnalyzer
         return orderedPathPatterns;
     }
 
-    public UserPathPartition? FastestCommonPathPattern()
+    public UserPathPartition FastestCommonPathPattern()
     {
         var mostCommon = MostCommonPathPattern();
 
         var fastest = mostCommon.PathPatterns.OrderBy(s => s.TotalLoadTime);
 
-        return fastest.FirstOrDefault();
+        return fastest.FirstOrDefault() ?? new UserPathPartition(Enumerable.Empty<LogEntry>());        
     }
 
     public UserPathPartition SlowestPathPattern()

@@ -1,11 +1,14 @@
-﻿namespace logparserkata;
-public class PathPattern
+﻿using System.Collections.Immutable;
+
+namespace logparserkata;
+public sealed class PathPattern
 {
-    public List<UserPathPartition> PathPatterns { get; }
+    public IImmutableList<UserPathPartition> PathPatterns { get; }
+
     public int OccurenceCount { get; }
-    public PathPattern(int occurenceCount, List<UserPathPartition> pathPatterns)
+    public PathPattern(int occurenceCount, IEnumerable<UserPathPartition> pathPatterns)
     {         
-        this.PathPatterns = pathPatterns ?? new List<UserPathPartition>();
+        this.PathPatterns = pathPatterns?.ToImmutableList() ?? ImmutableList<UserPathPartition>.Empty;
         this.OccurenceCount = occurenceCount;
     }
 }
