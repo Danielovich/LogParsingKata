@@ -42,12 +42,6 @@ public sealed class PathPatterns
                 )
             );
 
-            //var occurence = new PathPattern(1,
-            //    new Collection<UserPathPartition> {
-            //        new UserPathPartition(userPathPartition.Paths)
-            //    }
-            //);
-
             pathPatternOccurences.Add(flattenedPaths, occurence);
         }
     }
