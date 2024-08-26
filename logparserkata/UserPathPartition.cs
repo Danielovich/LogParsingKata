@@ -12,17 +12,17 @@ public sealed class UserPathPartition
     public UserPathPartition(IEnumerable<LogEntry> paths)
     {
         this.Paths = paths?.ToImmutableList() ?? ImmutableList<LogEntry>.Empty;
-        this.UserId = this.Paths.Select(u => u.UserId).FirstOrDefault();
+        this.UserId = this.Paths.FirstOrDefault().UserId;
     }
 
-    public string Flatten()
-    {
-        string flattenedPaths = string.Empty;
-        foreach (var logEntry in Paths)
+    private string Flatten()
+    {        
+        string concat = string.Empty;
+        for (var i = 0; i < this.Paths.Count; i++)
         {
-            flattenedPaths = flattenedPaths + logEntry.Path;
+            concat += string.Concat(this.Paths[i].Path);
         }
 
-        return flattenedPaths;
+        return concat;
     }
 }

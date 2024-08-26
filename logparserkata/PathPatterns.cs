@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 
 namespace logparserkata;
 
@@ -36,10 +37,16 @@ public sealed class PathPatterns
         if (!pathPatternOccurences.ContainsKey(flattenedPaths))
         {
             var occurence = new PathPattern(1,
-                new List<UserPathPartition>() {
+                ImmutableList<UserPathPartition>.Empty.Add(
                     new UserPathPartition(userPathPartition.Paths)
-                }
+                )
             );
+
+            //var occurence = new PathPattern(1,
+            //    new Collection<UserPathPartition> {
+            //        new UserPathPartition(userPathPartition.Paths)
+            //    }
+            //);
 
             pathPatternOccurences.Add(flattenedPaths, occurence);
         }

@@ -23,18 +23,3 @@ public class PathPatternsAnalyserLogEntryFileTests : IClassFixture<LogEntriesFix
         Assert.True(actual.PathPatterns.All(a => a.FlattenedPaths == "814.html368.html594.html"));
     }
 }
-
-public class LogEntriesFixture
-{
-    public List<LogEntry> LogEntries { get; set; } = new List<LogEntry>();
-
-    public async Task InitializeAsync()
-    {
-        var logLoader = new LogFileLoader();
-        LogEntries = (await logLoader.LoadEntriesAsync()).ToList();
-    }
-
-    public LogEntriesFixture()
-    {
-    }
-}
