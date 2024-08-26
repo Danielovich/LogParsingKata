@@ -39,7 +39,7 @@ public sealed class PathPatternsAnalyzer
 
         if (first.OccurenceCount == last.OccurenceCount)
         {
-            return new PathPattern(0, new List<UserPathPartition>());
+            return new PathPattern(0, ImmutableList.Create<UserPathPartition>());
         }
 
         return orderedPathPatterns.First();
