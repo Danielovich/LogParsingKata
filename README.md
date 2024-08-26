@@ -8,6 +8,7 @@ I have written articles around every iteration, starting with an opener.
 2. [Three Page Path Challenge - Thoughts and first iteration](https://danielfrost.dk/three-page-path-challenge-first-iteration.html)
 3. [Three Page Path Challenge - second iteration](https://danielfrost.dk/three-page-path-challenge-second-iteration.html)
 4. [Three Page Path Challenge - third iteration](https://danielfrost.dk/three-page-path-challenge-third-iteration.html)
+5. [Three Page Path Challenge - fourth iteration](https://danielfrost.dk/three-page-path-challenge-fourth-iteration.html)
 
 You can find a branch in this repo with the name for each iteration.
 
