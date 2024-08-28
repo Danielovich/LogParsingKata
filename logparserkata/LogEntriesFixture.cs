@@ -1,13 +1,15 @@
-﻿namespace logparserkata;
+﻿using System.Collections.Immutable;
+
+namespace logparserkata;
 
 public class LogEntriesFixture
 {
-    public List<LogEntry> LogEntries { get; set; } = new List<LogEntry>();
+    public IImmutableList<LogEntry> LogEntries { get; set; } = ImmutableList.Create<LogEntry>();
 
     public async Task InitializeAsync()
     {
         var logLoader = new LogFileLoader();
-        LogEntries = (await logLoader.LoadEntriesAsync()).ToList();
+        this.LogEntries = (await logLoader.LoadEntriesAsync()).ToImmutableList();
     }
 
     public LogEntriesFixture()

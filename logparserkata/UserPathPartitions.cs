@@ -6,12 +6,12 @@ public sealed class UserPathPartitions
 {
     private readonly IImmutableList<LogEntry> logEntries;
 
-    public UserPathPartitions(IEnumerable<LogEntry> logEntries)
+    public UserPathPartitions(IImmutableList<LogEntry> logEntries)
     {
-        this.logEntries = logEntries.ToImmutableList() ?? ImmutableList<LogEntry>.Empty;
+        this.logEntries = logEntries ?? ImmutableList<LogEntry>.Empty;
     }
 
-    public ImmutableList<UserPathPartition> PartitionedByUserId(int partitionSize)
+    public IImmutableList<UserPathPartition> PartitionedByUserId(int partitionSize)
     {
         var groupedLogEntriesByUser = logEntries
             .GroupBy(x => x.UserId)
@@ -27,7 +27,7 @@ public sealed class UserPathPartitions
             foreach (var logPartition in sizedLogPartitions)
             {
                 userPathPartitions.Add(
-                    new UserPathPartition(logPartition)
+                    new UserPathPartition(logPartition.ToImmutableList())
                 );
             }
         }

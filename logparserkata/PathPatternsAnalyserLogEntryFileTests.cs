@@ -6,15 +6,15 @@ public class PathPatternsAnalyserLogEntryFileTests : IClassFixture<LogEntriesFix
 
     public PathPatternsAnalyserLogEntryFileTests(LogEntriesFixture fixture)
     {
-        _fixture = fixture;
-        _fixture.InitializeAsync().GetAwaiter().GetResult();
+        this._fixture = fixture;
+        this._fixture.InitializeAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
     public async Task What_Is_The_Single_Most_Common_Page_Pattern()
     {
         //Arrange
-        var sut = new PathPatternsAnalyzer(_fixture.LogEntries, 3);
+        var sut = new PathPatternsAnalyzer(this._fixture.LogEntries, 3);
 
         //Act
         var actual = await Task.FromResult(sut.MostCommonPathPattern());

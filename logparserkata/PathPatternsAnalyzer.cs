@@ -4,26 +4,27 @@ namespace logparserkata;
 
 public sealed class PathPatternsAnalyzer
 {
-    private readonly ImmutableList<LogEntry> logEntries;
+    public IImmutableList<LogEntry> LogEntries { get; }
+
     private readonly int partitionSize;
 
     private IOrderedEnumerable<PathPattern> orderedPathPatterns = Enumerable.Empty<PathPattern>().OrderBy(p => 0);
-    private IEnumerable<UserPathPartition> userPathPartitions = new List<UserPathPartition>();
+    private IImmutableList<UserPathPartition> userPathPartitions = ImmutableList.Create<UserPathPartition>();
 
-    public PathPatternsAnalyzer(IEnumerable<LogEntry> logEntries, int partitionSize)
+    public PathPatternsAnalyzer(IImmutableList<LogEntry> logEntries, int partitionSize)
     {
         this.partitionSize = partitionSize;
-        this.logEntries = logEntries.ToImmutableList() ?? ImmutableList<LogEntry>.Empty;
+        this.LogEntries = logEntries ?? ImmutableList<LogEntry>.Empty;
 
         if (this.partitionSize == 0)
         {
-            throw new ArgumentException($"{partitionSize} cannot be zero");
+            throw new ArgumentException($"{this.partitionSize} cannot be zero");
         }
 
-        if (partitionSize > this.logEntries.Count())
+        if (partitionSize > this.LogEntries.Count())
         {
             throw new ArgumentException($"{partitionSize} is larger than the total " +
-                $"entries in {logEntries} - {this.logEntries.Count()}");
+                $"entries in {nameof(this.LogEntries)} - {this.LogEntries.Count()}");
         }
 
         PartitionUserPaths();
@@ -34,15 +35,15 @@ public sealed class PathPatternsAnalyzer
     {
         // if first and last entry in an ordered list has the same
         // occurence count, there can be no common path
-        var first = orderedPathPatterns.First();
-        var last = orderedPathPatterns.Last();
+        var first = this.orderedPathPatterns.First();
+        var last = this.orderedPathPatterns.Last();
 
         if (first.OccurenceCount == last.OccurenceCount)
         {
             return new PathPattern(0, ImmutableList.Create<UserPathPartition>());
         }
 
-        return orderedPathPatterns.First();
+        return this.orderedPathPatterns.First();
     }
 
     public IOrderedEnumerable<PathPattern> AllPathPatterns()
@@ -56,12 +57,12 @@ public sealed class PathPatternsAnalyzer
 
         var fastest = mostCommon.PathPatterns.OrderBy(s => s.TotalLoadTime);
 
-        return fastest.FirstOrDefault() ?? new UserPathPartition(Enumerable.Empty<LogEntry>());        
+        return fastest.FirstOrDefault() ?? new UserPathPartition(ImmutableList.Create<LogEntry>());        
     }
 
     public UserPathPartition SlowestPathPattern()
     {
-        var slowest = orderedPathPatterns
+        var slowest = this.orderedPathPatterns
             .SelectMany(p => p.PathPatterns)
             .OrderByDescending(o => o.TotalLoadTime)
             .First();
@@ -71,13 +72,13 @@ public sealed class PathPatternsAnalyzer
 
     private void PartitionUserPaths()
     {
-        var pathPartitions = new UserPathPartitions(this.logEntries);
-        userPathPartitions = pathPartitions.PartitionedByUserId(this.partitionSize);
+        var pathPartitions = new UserPathPartitions(this.LogEntries);
+        this.userPathPartitions = pathPartitions.PartitionedByUserId(this.partitionSize);
     }
 
     private void OrderPathPatterns()
     {
         var pathPatterns = new PathPatterns(this.userPathPartitions);
-        orderedPathPatterns = pathPatterns.OrderByOccurenceDescending();
+        this.orderedPathPatterns = pathPatterns.OrderByOccurenceDescending();
     }
 }

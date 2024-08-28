@@ -5,6 +5,7 @@ namespace logparserkata;
 public class PathPatternsLogEntryFileTests : IClassFixture<LogEntriesFixture>
 {
     private readonly LogEntriesFixture _fixture;
+    private const long maxElapsedExecutionMilliseconds = 2000;
 
     public PathPatternsLogEntryFileTests(LogEntriesFixture fixture)
     {
@@ -28,6 +29,7 @@ public class PathPatternsLogEntryFileTests : IClassFixture<LogEntriesFixture>
         stopwatch.Stop();
 
         //Act
+        Assert.True(stopwatch.ElapsedMilliseconds < maxElapsedExecutionMilliseconds);
         Console.WriteLine(stopwatch.Elapsed.ToString());
     }
 }

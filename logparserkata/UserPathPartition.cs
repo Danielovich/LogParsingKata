@@ -9,9 +9,9 @@ public sealed class UserPathPartition
     public IImmutableList<LogEntry> Paths { get; }
     public string FlattenedPaths { get => Flatten(); }
 
-    public UserPathPartition(IEnumerable<LogEntry> paths)
+    public UserPathPartition(IImmutableList<LogEntry> paths)
     {
-        this.Paths = paths?.ToImmutableList() ?? ImmutableList<LogEntry>.Empty;
+        this.Paths = paths ?? ImmutableList<LogEntry>.Empty;
         this.UserId = this.Paths.FirstOrDefault().UserId;
     }
 

@@ -7,17 +7,17 @@ public sealed class PathPatterns
     private readonly IImmutableList<UserPathPartition> userPathPartitions;
     private readonly Dictionary<string, PathPattern> pathPatternOccurences;
 
-    public PathPatterns(IEnumerable<UserPathPartition> userPathPartitions)
+    public PathPatterns(IImmutableList<UserPathPartition> userPathPartitions)
     {
-        this.userPathPartitions = userPathPartitions.ToImmutableList() ?? ImmutableList<UserPathPartition>.Empty;
+        this.userPathPartitions = userPathPartitions ?? ImmutableList<UserPathPartition>.Empty;
         this.pathPatternOccurences = new Dictionary<string, PathPattern>();
     }
 
     public IOrderedEnumerable<PathPattern> OrderByOccurenceDescending()
     {
-        pathPatternOccurences.Clear();
+        this.pathPatternOccurences.Clear();
 
-        foreach (var pathPartition in userPathPartitions)
+        foreach (var pathPartition in this.userPathPartitions)
         {
             var flattendPaths = pathPartition.FlattenedPaths;
 
@@ -25,7 +25,7 @@ public sealed class PathPatterns
             NonExistingPathPattern(flattendPaths, pathPartition);
         }
 
-        var orderedPatternOccurences = pathPatternOccurences.Values
+        var orderedPatternOccurences = this.pathPatternOccurences.Values
             .OrderByDescending(p => p.OccurenceCount);
 
         return orderedPatternOccurences;
@@ -33,7 +33,7 @@ public sealed class PathPatterns
 
     private void NonExistingPathPattern(string flattenedPaths, UserPathPartition userPathPartition)
     {
-        if (!pathPatternOccurences.ContainsKey(flattenedPaths))
+        if (!this.pathPatternOccurences.ContainsKey(flattenedPaths))
         {
             var occurence = new PathPattern(1,
                 ImmutableList<UserPathPartition>.Empty.Add(
@@ -41,15 +41,15 @@ public sealed class PathPatterns
                 )
             );
 
-            pathPatternOccurences.Add(flattenedPaths, occurence);
+            this.pathPatternOccurences.Add(flattenedPaths, occurence);
         }
     }
 
     private void ExistingPathPattern(string flattenedPaths, UserPathPartition userPathPartition)
     {
-        if (pathPatternOccurences.ContainsKey(flattenedPaths))
+        if (this.pathPatternOccurences.ContainsKey(flattenedPaths))
         {
-            var patternOccurence = pathPatternOccurences[flattenedPaths];
+            var patternOccurence = this.pathPatternOccurences[flattenedPaths];
             var count = patternOccurence.OccurenceCount;
 
             var pathPatternsCopy = patternOccurence.PathPatterns.Add(
@@ -58,8 +58,8 @@ public sealed class PathPatterns
 
             var occurence = new PathPattern(++count, pathPatternsCopy);
 
-            pathPatternOccurences.Remove(flattenedPaths);
-            pathPatternOccurences.Add(flattenedPaths, occurence);
+            this.pathPatternOccurences.Remove(flattenedPaths);
+            this.pathPatternOccurences.Add(flattenedPaths, occurence);
         }
     }
 }

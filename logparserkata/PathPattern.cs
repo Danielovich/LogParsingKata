@@ -8,7 +8,7 @@ public sealed class PathPattern
     public int OccurenceCount { get; }
     public PathPattern(int occurenceCount, IImmutableList<UserPathPartition> pathPatterns)
     {         
-        this.PathPatterns = pathPatterns?.ToImmutableList() ?? ImmutableList<UserPathPartition>.Empty;
+        this.PathPatterns = pathPatterns ?? ImmutableList<UserPathPartition>.Empty;
         this.OccurenceCount = occurenceCount;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace logparserkata;
+﻿using System.Collections.Immutable;
+
+namespace logparserkata;
 
 public class PathPatternsAnalyzerTests
 {
@@ -109,8 +111,25 @@ public class PathPatternsAnalyzerTests
         Assert.NotNull(actual);
     }
 
+    [Fact]
+    public void Construtor_Parameter_Cannot_Update_During_Execution()
+    {
+        //Arrange
+        var listOfLogEntries = Log_Entries_No_Common_Paths().ToList();
+        var count = listOfLogEntries.Count;
 
-    private IEnumerable<LogEntry> Log_Entries_No_Common_Paths()
+        var sut = new PathPatternsAnalyzer(listOfLogEntries.ToImmutableList(), 3);
+
+        //Act
+        // collection in sut will not be affected
+        listOfLogEntries.Add(new LogEntry(1, "path", 100));
+
+        //Assert
+        Assert.True(count == sut.LogEntries.Count());
+    }
+
+
+    private ImmutableList<LogEntry> Log_Entries_No_Common_Paths()
     {
         var partitions = new List<LogEntry>
         {
@@ -124,10 +143,10 @@ public class PathPatternsAnalyzerTests
             new LogEntry(2, "/jobs", 300),
         };
 
-        return partitions;
+        return partitions.ToImmutableList();
     }
 
-    private IEnumerable<LogEntry> Log_Entries_For_4_Users()
+    private ImmutableList<LogEntry> Log_Entries_For_4_Users()
     {
         var partitions = new List<LogEntry>
         {
@@ -150,12 +169,13 @@ public class PathPatternsAnalyzerTests
             new LogEntry(4, "/people", 200)
         };
 
-        return partitions;
+        return partitions.ToImmutableList();
     }
 
-    private IEnumerable<LogEntry> Empty_Log_Entries()
+    private ImmutableList<LogEntry> Empty_Log_Entries()
     {
         var partitions = new List<LogEntry>();
-        return partitions;
+
+        return partitions.ToImmutableList();
     }
 }

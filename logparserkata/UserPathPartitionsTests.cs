@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace logparserkata;
 
 public class UserPathPartitionsTests
@@ -53,7 +55,7 @@ public class UserPathPartitionsTests
         }
     }
 
-    private IEnumerable<LogEntry> Log_Entries_For_Three_Users()
+    private IImmutableList<LogEntry> Log_Entries_For_Three_Users()
     {
         var entries = new List<LogEntry>
         {
@@ -77,6 +79,6 @@ public class UserPathPartitionsTests
             new LogEntry(3, "3.html", 30)
         };
 
-        return entries;
+        return entries.ToImmutableList();
     }
 }
