@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "logparserkata", "logparserkata.csproj", "{F14B1408-FC57-4D7D-85E7-EDF7EF42CDE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Executor", "..\Executor\Executor.csproj", "{C6AD6D12-0AC8-4C53-9E45-BA92D2987E4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runner", "..\Executor\Runner.csproj", "{C6AD6D12-0AC8-4C53-9E45-BA92D2987E4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
