@@ -1,7 +1,7 @@
 ﻿using logparserkata;
 using System.Collections.Immutable;
 
-namespace Executor;
+namespace Runner;
 
 internal class Program
 {
